@@ -88,7 +88,7 @@ class VideoRead:
 	def combine_data_label(self, path): #TupleDataset型に変換
 		assert(os.path.exists(path)), "not exist directory"
 		data, label = self.makelist_all_class(path)
-		N = 80 #学習に使用するサイズ
+		N = 1 #学習に使用するサイズ
 		#学習用とテスト用にファイルを分ける	
 		with cuda.Device(1):
 			x_gpu = cp.array(data)

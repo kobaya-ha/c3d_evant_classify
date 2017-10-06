@@ -10,7 +10,7 @@ import chainer.links as L
 import chainer.functions as F
 from chainer import optimizers, Variable, serializers, training
 from chainer.training import extensions
-from chainer.links import CaffeFunction
+from chainer.links.caffe import CaffeFunction
 
 import videoread
 import c3dnet
@@ -38,15 +38,15 @@ def main():
 	                    help='Number of images in each mini-batch')
 	parser.add_argument('--epoch', '-e', type=int, default=100,
 	                    help='Number of sweeps over the dataset to train')
-	parser.add_argument('--gpu', '-g', type=int, default=0,
+        parser.add_argument('--gpu', '-g', type=int, default=0,
 	                    help='GPU ID (negative value indicates CPU)')
-	parser.add_argument('--out', '-o', default='../result/64x64_20/20170913',
+	parser.add_argument('--out', '-o', default='../result/20171006',
 	                    help='Directory to output the result')
 	parser.add_argument('--resume', '-r', default='resume',
 	                    help='Resume the training from snapshot')
 	parser.add_argument('--unit', '-u', type=int, default=1000,
 	                    help='Number of units')
-	parser.add_argument('--input', '-i', default='../data/classify_4_64x64',
+	parser.add_argument('--input', '-i', default='../data/sample_videoset',
 	                    help='Directory to input data')
 
 	args = parser.parse_args()
