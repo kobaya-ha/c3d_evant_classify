@@ -46,7 +46,7 @@ def main():
 	                    help='Resume the training from snapshot')
 	parser.add_argument('--unit', '-u', type=int, default=1000,
 	                    help='Number of units')
-	parser.add_argument('--input', '-i', default='../data/sample_videoset',
+	parser.add_argument('--input', '-i', default='../data/sample_videoset_171x128',
 	                    help='Directory to input data')
 
 	args = parser.parse_args()
@@ -64,10 +64,10 @@ def main():
 	train, test = v.combine_data_label(args.input)
 	
 	#学習済みCaffeモデルの設定
-        pre_model = CaffeFunction("c3d_resnet18_ucf101_r2_ft_iter_20000.caffemodel")
-        print (pre_model.shape)
+        model = CaffeFunction("c3d_resnet18_ucf101_r2_ft_iter_20000.caffemodel")
+        #print (pre_model.shape)
         
-        model = c3dnet.C3D()
+        #model = c3dnet.C3D()
 	if args.gpu >= 0:
 		chainer.cuda.get_device(args.gpu).use()  # Make a specified GPU current
 		model.to_gpu()  # Copy the model to the GPU
@@ -75,7 +75,9 @@ def main():
 	#Setup an optimizer"
 	optimizer = chainer.optimizers.MomentumSGD()
 	optimizer.setup(model)
-
+	"caffemodelへの入力の仕方"
+	#models.layersでレイヤー一覧	
+	#model(inputs={"data": np.zeros((8,128,171,3))}, outputs={"conv1"})
 	#make iterators"
 	train_iter = chainer.iterators.SerialIterator(train, args.batchsize)
 	test_iter = chainer.iterators.SerialIterator(test, args.batchsize, repeat=False, shuffle=False)
@@ -84,8 +86,8 @@ def main():
 	trainer = training.Trainer(updater, (args.epoch, 'epoch'), out=args.out)
 
 
-	val_interval = (20 ), 'iteration'
-	log_interval = (20 ), 'iteration'
+	val_interval = (20), 'iteration'
+	log_interval = (20), 'iteration'
 	trainer.extend(extensions.Evaluator(test_iter, model, device=args.gpu))
 	trainer.extend(extensions.dump_graph('main/loss'))
 	trainer.extend(extensions.snapshot(), trigger=val_interval)
@@ -102,9 +104,9 @@ def main():
 	#Progress barを表示
 	trainer.extend(extensions.ProgressBar())#update_interval=10))
 
-        #trainer.run()
+        trainer.run()
         serializers.save_npz("mymodel.npz", model)
-	serializers.save_npz("mynet.npz", net)
+	#serializers.save_npz("mynet.npz", net)
 
 
 if __name__ == '__main__':
